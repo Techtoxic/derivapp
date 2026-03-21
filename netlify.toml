@@ -1,7 +1,7 @@
 [build]
   command = "npm run bootstrap && npm run build:all"
   publish = "packages/core/dist"
-  environment = { NODE_VERSION = "20", NODE_ENV = "production" }
+  environment = { NODE_VERSION = "20" }
 
 [[redirects]]
   from = "/*"
