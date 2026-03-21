@@ -39,7 +39,10 @@ module.exports = function () {
                             options: {
                                 extract: true,
                                 spriteFilename: svgPath => {
-                                    const category = /components\/icon\/([\w-]*)/.exec(svgPath)[1];
+                                    // Normalize Windows paths before matching icon category.
+                                    const normalized_svg_path = svgPath.replace(/\\/g, '/');
+                                    const match = /components\/icon\/([\w-]*)/.exec(normalized_svg_path);
+                                    const category = match ? match[1] : '';
 
                                     return category ? `${category}.[contenthash].svg` : 'common.[contenthash].svg';
                                 },

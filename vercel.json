@@ -1,3 +1,23 @@
 {
-    "routes": [{ "handle": "filesystem" }, { "src": "/(.*)", "dest": "/index.html" }]
+    "buildCommand": "npm run build:all",
+    "installCommand": "npm run bootstrap",
+    "regions": ["iad1"],
+    "functions": {
+        "api/**/*.{js,ts}": {
+            "memory": 3008,
+            "maxDuration": 60
+        }
+    },
+    "routes": [
+        { "handle": "filesystem" },
+        { 
+            "src": "/(.*)", 
+            "dest": "/index.html",
+            "status": 200
+        }
+    ],
+    "env": {
+        "NODE_ENV": "production",
+        "npm_config_script_shell": "/bin/bash"
+    }
 }
