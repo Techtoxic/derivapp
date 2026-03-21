@@ -1,13 +1,30 @@
 # Deployment Guide for Deriv App
 
-This document outlines how to deploy the Deriv application to Vercel using Docker, and how to test locally.
+This document outlines how to deploy the Deriv application to Vercel or Netlify, and how to test locally.
 
 ## Prerequisites
 
 - Node.js 20.x (required, not 22.x)
 - npm 9.x or higher
-- Docker (for local testing before Vercel deployment)
+- Docker (optional, for local testing)
 - Git
+- **Application ID from Deriv**: Register at https://developers.binary.com/applications/
+
+## Application ID Setup
+
+**REQUIRED**: The app needs a Deriv Application ID to connect to the API.
+
+1. **Register your app** at [https://developers.binary.com/applications/](https://developers.binary.com/applications/)
+2. **Configure redirect URLs**:
+    - For local: `http://localhost:8443`
+    - For production: `https://your-domain.netlify.app` (or your actual domain)
+3. **Add the Application ID** to `packages/core/src/config.js`:
+
+    ```javascript
+    export const user_app_id = 'YOUR_APP_ID_FROM_BINARY_HERE';
+    ```
+
+4. **Commit and push** the config file to GitHub
 
 ## Local Development
 
@@ -86,7 +103,44 @@ If Vercel supports Docker deployments in your plan:
 3. **Deploy to Vercel**:
     - Vercel will detect `Dockerfile` and automatically use Docker for deployment
 
-## Troubleshooting
+## Netlify Deployment (Recommended - Better for Monorepos)
+
+**Advantages over Vercel**: No memory restrictions on builds, better monorepo support, faster deployments.
+
+### Deploy to Netlify
+
+1. **Connect GitHub to Netlify**:
+
+    - Go to https://app.netlify.com/start
+    - Click "Connect to Git"
+    - Select GitHub and authenticate
+    - Select `Techtoxic/derivapp` repository
+
+2. **Configure Build Settings**:
+
+    - Netlify will auto-detect `netlify.toml` configuration
+    - Build command: `npm run bootstrap && npm run build:all`
+    - Publish directory: `packages/core/dist`
+    - Node version: 20 (specified in netlify.toml)
+
+3. **Deploy**:
+    - Click "Save & Deploy"
+    - Netlify will build and deploy automatically
+    - Your app will be available at `https://your-site-name.netlify.app`
+
+### Configure Environment Variables (Netlify Dashboard)
+
+1. Go to Site Settings → Environment
+2. Add these variables:
+    - `NODE_ENV`: `production`
+    - `NODE_VERSION`: `20`
+3. Redeploy the site
+
+### Monitor Deployment
+
+- View build logs in Netlify Dashboard
+- Check for build failures in the deploy logs
+- Test your application at the provided netlify.app URL
 
 ### Build Fails with Node Version Error
 
