@@ -130,23 +130,36 @@ If Vercel supports Docker deployments in your plan:
 
 ### Configure Environment Variables (Netlify Dashboard)
 
+**Important**: Do NOT set `NODE_ENV=production` during build - the build needs dev dependencies (like husky).
+
 1. Go to Site Settings → Environment
-2. Add these variables:
-    - `NODE_ENV`: `production`
-    - `NODE_VERSION`: `20`
-3. Redeploy the site
+2. **If using custom server** (optional): Add these variables:
+    - `NODE_ENV`: `production` (only for runtime, not build)
+    - `NODE_VERSION`: `20` (already set in netlify.toml)
+3. Re-deploy the site if you added any new variables
 
-### Monitor Deployment
+### Troubleshooting Netlify Build Failures
 
-- View build logs in Netlify Dashboard
-- Check for build failures in the deploy logs
-- Test your application at the provided netlify.app URL
+**Error: "husky: not found"**
 
-### Build Fails with Node Version Error
+- This happens if `NODE_ENV=production` is set during the build phase
+- **Fix**: Remove `NODE_ENV=production` from Netlify build environment (netlify.toml is already configured correctly)
+- The build needs dev dependencies including husky to set up git hooks
 
-- Ensure Node.js 20.x is installed locally
-- Vercel will use Node 20.x specified in `package.json` engines field
-- Check: `node --version` (should be 20.x.x)
+**Build timeout or out of memory**
+
+- Netlify has generous build quotas (better than Vercel's free tier)
+- If still timing out, check if `npm run build:all` is completing locally first
+
+### Redeploy After Fix
+
+Once you've pushed the fix to GitHub (commit cb51c0976e):
+
+1. Go to https://app.netlify.com/sites/YOUR-SITE/deploys
+2. Click "Retry deploy" on the failed build
+3. New build will use the fixed netlify.toml configuration
+
+## Troubleshooting
 
 ### "Cannot read properties of null" in webpack build
 
@@ -163,6 +176,19 @@ If Vercel supports Docker deployments in your plan:
 - Always run `npm run bootstrap` before `npm run build:all`
 - Bootstrap installs all workspace dependencies correctly
 - Rebuild if needed: `npm run clean && npm run bootstrap && npm run build:all`
+
+### Build Environment Errors
+
+**"husky: not found" on Netlify**
+
+- Caused by `NODE_ENV=production` during build phase
+- **Fix**: Use netlify.toml already in repo (NODE_ENV only set at runtime, not build)
+- Netlify needs dev dependencies during build
+
+**Unsupported engine warnings for @deriv-com/analytics**
+
+- Warning about Node 18.x vs 20.x is normal - app works fine on Node 20.x
+- Safe to ignore - all packages are compatible
 
 ## Key Improvements
 
