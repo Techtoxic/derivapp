@@ -142,18 +142,33 @@ If Vercel supports Docker deployments in your plan:
 
 **Error: "husky: not found"**
 
-- This happens if `NODE_ENV=production` is set during the build phase
-- **Fix**: Remove `NODE_ENV=production` from Netlify build environment (netlify.toml is already configured correctly)
-- The build needs dev dependencies including husky to set up git hooks
-
 **Build timeout or out of memory**
 
-- Netlify has generous build quotas (better than Vercel's free tier)
-- If still timing out, check if `npm run build:all` is completing locally first
+**Error: "FATAL ERROR: Reached heap limit - JavaScript heap out of memory"**
+
+- This happens when webpack tries to bundle the entire monorepo without enough memory
+- **Root cause**: The core package is large and nodejs heap limit is too low
+- **Fix**: netlify.toml now includes `NODE_OPTIONS='--max-old-space-size=4096'` to allocate 4GB of heap
+- The build requires all packages (components, account, bot-web-ui, trader, reports, etc.) as dependencies
+
+### Can I Deploy Only Trader (dtrader)?
 
 ### Redeploy After Fix
 
-Once you've pushed the fix to GitHub (commit cb51c0976e):
+The Deriv app is deployed as a **monorepo** - you cannot deploy only the trader component in isolation:
+
+- **@deriv/core**: Main app shell that gets deployed (contains routing, authentication, navigation)
+- **@deriv/trader**: Trading module (loaded as a module within core)
+- **Other packages**: Components, API clients, stores, shared utilities
+
+When you deploy, you're actually deploying the **@deriv/core** package with all its dependencies, which includes the trader module and many others.
+
+**What you CAN do**:
+
+- Deploy the full app (recommended) - includes trader, accounts, cashier, reports, etc.
+- Disable specific features in the app configuration after deployment
+- Modify which modules load in the core package (advanced - requires code changes)
+  Once you've pushed the fix to GitHub (commit cb51c0976e):
 
 1. Go to https://app.netlify.com/sites/YOUR-SITE/deploys
 2. Click "Retry deploy" on the failed build
