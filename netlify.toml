@@ -1,5 +1,5 @@
 [build]
-  command = "npm run bootstrap && npm run build:all"
+  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=4096' npm run build:all"
   publish = "packages/core/dist"
   environment = { NODE_VERSION = "20" }
 
