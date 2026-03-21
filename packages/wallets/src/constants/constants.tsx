@@ -21,8 +21,11 @@ export const appendSearchParamsToUrl = (url: string): string => {
 
     const urlObj = new URL(url, window.location.origin);
     const existingParams = urlObj.searchParams;
+    const is_bot_url = /(^|\/)bot(\?|$)/.test(urlObj.pathname + urlObj.search);
+    const allowed_bot_params = ['account', 'lang'];
 
     searchParams.forEach((value, key) => {
+        if (is_bot_url && !allowed_bot_params.includes(key)) return;
         existingParams.set(key, value);
     });
 

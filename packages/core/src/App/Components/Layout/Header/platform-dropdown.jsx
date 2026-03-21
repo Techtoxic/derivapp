@@ -23,6 +23,7 @@ const PlatformBox = ({ platform: { icon, description } }) => (
 const appendAccountParamToUrl = (link_to, client) => {
     const { is_virtual, currency } = client;
     let url = link_to;
+    const is_bot_url = /(^|\/)bot(\?|$)/.test(link_to);
 
     if (is_virtual) {
         url = `${url}${url.includes('?') ? '&' : '?'}account=demo`;
@@ -30,14 +31,16 @@ const appendAccountParamToUrl = (link_to, client) => {
         url = `${url}${url.includes('?') ? '&' : '?'}account=${currency}`;
     }
 
-    // Add symbol parameter if available in session storage
-    try {
-        const trade_store = JSON.parse(sessionStorage.getItem('trade_store') || '{}');
-        if (trade_store?.symbol) {
-            url = `${url}${url.includes('?') ? '&' : '?'}symbol=${trade_store.symbol}`;
+    // Preserve symbol only for trader routes. Bot links should stay clean and account-scoped.
+    if (!is_bot_url) {
+        try {
+            const trade_store = JSON.parse(sessionStorage.getItem('trade_store') || '{}');
+            if (trade_store?.symbol) {
+                url = `${url}${url.includes('?') ? '&' : '?'}symbol=${trade_store.symbol}`;
+            }
+        } catch (e) {
+            // If parsing fails, continue without symbol
         }
-    } catch (e) {
-        // If parsing fails, continue without symbol
     }
 
     return url;

@@ -70,20 +70,13 @@ export const getUrlSmartTrader = () => {
 };
 
 export const getUrlBot = () => {
-    const { isStagingDerivApp } = getPlatformFromUrl();
-    const localizeLanguage = LocalStorageUtils.getValue<string>('i18n_language');
-    const urlLang = URLUtils.getQueryParameter('lang');
-    const i18NLanguage = localizeLanguage || urlLang || 'en';
+    const customBotUrl = process.env.CUSTOM_DBOT_URL?.trim();
 
-    let baseLink = '';
-
-    if (isStagingDerivApp) {
-        baseLink = derivUrls.BOT_STAGING;
-    } else {
-        baseLink = derivUrls.BOT_PRODUCTION;
+    if (customBotUrl) {
+        return customBotUrl;
     }
 
-    return `${baseLink}?lang=${i18NLanguage.toLowerCase()}`;
+    return `${window.location.origin}/bot`;
 };
 
 export const getPlatformFromUrl = (domain = window.location.hostname) => {

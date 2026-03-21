@@ -142,37 +142,35 @@ If Vercel supports Docker deployments in your plan:
 
 **Error: "husky: not found"**
 
-**Build timeout or out of memory**
+- Cause: `NODE_ENV=production` during install/build, so dev dependencies are skipped.
+- Fix: Keep `NODE_ENV` out of build environment (already handled in `netlify.toml`).
 
 **Error: "FATAL ERROR: Reached heap limit - JavaScript heap out of memory"**
 
-- This happens when webpack tries to bundle the entire monorepo without enough memory
-- **Root cause**: The core package is large and nodejs heap limit is too low
-- **Fix**: netlify.toml now includes `NODE_OPTIONS='--max-old-space-size=4096'` to allocate 4GB of heap
-- The build requires all packages (components, account, bot-web-ui, trader, reports, etc.) as dependencies
+- Cause: monorepo webpack build exceeds default Node heap.
+- Fix: use `NODE_OPTIONS='--max-old-space-size=4096'` in build command (already configured).
 
-### Can I Deploy Only Trader (dtrader)?
+**Can I deploy only DTrader?**
 
-### Redeploy After Fix
+- Not as a standalone app in this repository. `@deriv/core` is the deployable shell and loads modules such as trader, bot, cashier, account, and reports.
 
-The Deriv app is deployed as a **monorepo** - you cannot deploy only the trader component in isolation:
+### Dbot Routing Hardening (Important)
 
-- **@deriv/core**: Main app shell that gets deployed (contains routing, authentication, navigation)
-- **@deriv/trader**: Trading module (loaded as a module within core)
-- **Other packages**: Components, API clients, stores, shared utilities
+To avoid redirects to `dbot.deriv.com` and keep navigation inside your deployment domain:
 
-When you deploy, you're actually deploying the **@deriv/core** package with all its dependencies, which includes the trader module and many others.
+- Dbot URL helpers are configured to use same-origin `/bot`.
+- Platform switcher uses internal navigation for Dbot (`link_to: /bot`) instead of external href refresh.
+- Bot links only keep safe query params (`account`, `lang`) and do not carry DTrader-only params.
 
-**What you CAN do**:
+Optional override (if you want a fixed bot URL):
 
-- Deploy the full app (recommended) - includes trader, accounts, cashier, reports, etc.
-- Disable specific features in the app configuration after deployment
-- Modify which modules load in the core package (advanced - requires code changes)
-  Once you've pushed the fix to GitHub (commit cb51c0976e):
+- Set `CUSTOM_DBOT_URL` in environment variables (for example: `https://maxxciey.netlify.app/bot?account=AUD`).
+
+### Redeploy After Changes
 
 1. Go to https://app.netlify.com/sites/YOUR-SITE/deploys
-2. Click "Retry deploy" on the failed build
-3. New build will use the fixed netlify.toml configuration
+2. Click "Trigger deploy" → "Deploy site" (or "Retry deploy" on failed one)
+3. Confirm `/bot` opens on your Netlify domain and does not bounce back to `/dtrader`
 
 ## Troubleshooting
 

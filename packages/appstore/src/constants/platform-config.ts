@@ -62,6 +62,8 @@ type ClientAccount = {
  */
 export const appendSearchParamsToUrl = (url: string): string => {
     const search_params = new URLSearchParams(window.location.search);
+    const is_bot_url = /(^|\/)bot(\?|$)/.test(url);
+    const allowed_bot_params = ['account', 'lang'];
 
     // Get active loginid from sessionStorage
     const active_loginid = sessionStorage.getItem('active_wallet_loginid') || sessionStorage.getItem('active_loginid');
@@ -96,6 +98,7 @@ export const appendSearchParamsToUrl = (url: string): string => {
     const existing_params = url_obj.searchParams;
 
     search_params.forEach((value, key) => {
+        if (is_bot_url && !allowed_bot_params.includes(key)) return;
         existing_params.set(key, value);
     });
 
