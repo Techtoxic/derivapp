@@ -4,9 +4,14 @@
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
+  from = "/"
+  to = "/dtrader"
+  status = 301
+
+[[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/dtrader"
+  status = 301
 
 [functions]
   node_bundler = "esbuild"
