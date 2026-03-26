@@ -1,5 +1,5 @@
 [build]
-  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=4096' npm run build:all"
+  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=4096' nx run-many --target=build --projects=@deriv/components,@deriv/shared,@deriv/translations,@deriv/hooks,@deriv/stores,@deriv/utils,@deriv/trader --parallel=2"
   publish = "packages/trader/dist"
   environment = { NODE_VERSION = "20" }
 
