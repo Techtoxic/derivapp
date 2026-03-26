@@ -1,17 +1,42 @@
 [build]
-  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=8192' nx build @deriv/components --skip-nx-cache && npm run build:local && mkdir -p dist && cp packages/trader/dist/trader/index.html dist/ 2>/dev/null || true && cp -r packages/trader/dist/trader/js dist/ 2>/dev/null || true && cp -r packages/trader/dist/trader/css dist/ 2>/dev/null || true"
+  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=8192' nx build @deriv/components --skip-nx-cache && npm run build:local && mkdir -p dist && cp dtrader-index.html dist/index.html && cp -r packages/trader/dist/trader/js dist/ && if [ -d packages/trader/dist/trader/css ]; then cp -r packages/trader/dist/trader/css dist/; fi"
   publish = "dist"
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
+  from = "/js/*"
+  to = "/js/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/css/*"
+  to = "/css/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/media/*"
+  to = "/media/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/dtrader"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/dtrader/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
   from = "/"
   to = "/dtrader"
-  status = 301
+  status = 302
 
 [[redirects]]
   from = "/*"
   to = "/dtrader"
-  status = 301
+  status = 302
 
 [functions]
   node_bundler = "esbuild"
