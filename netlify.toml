@@ -1,6 +1,6 @@
 [build]
-  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=16384' nx run-many --target=build --projects=@deriv/shared,@deriv/components,@deriv/translations,@deriv/hooks,@deriv/stores,@deriv/utils,@deriv/account,@deriv/cashier,@deriv/cfd,@deriv/reports,@deriv/bot-web-ui,@deriv/appstore,@deriv/wallets,@deriv/trader --parallel=1 && cd packages/core && npm run build"
-  publish = "packages/core/dist"
+  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=8192' npm run build:local && mkdir -p dist && cp packages/trader/dist/trader/index.html dist/ && cp -r packages/trader/dist/trader/js dist/ && cp -r packages/trader/dist/trader/css dist/"
+  publish = "dist"
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
