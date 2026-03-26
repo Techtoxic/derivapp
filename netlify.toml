@@ -1,6 +1,6 @@
 [build]
   command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=4096' npm run build:all"
-  publish = "packages/core/dist"
+  publish = "packages/trader/dist"
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
