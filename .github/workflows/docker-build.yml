@@ -28,3 +28,5 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/deriv-app:latest
           platforms: linux/amd64
+          provenance: false
+          sbom: false
