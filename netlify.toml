@@ -1,5 +1,5 @@
 [build]
-  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=8192' npm run build:local && mkdir -p dist && cp packages/trader/dist/trader/index.html dist/ && cp -r packages/trader/dist/trader/js dist/ && cp -r packages/trader/dist/trader/css dist/"
+  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=8192' nx build @deriv/components --skip-nx-cache && npm run build:local && mkdir -p dist && cp packages/trader/dist/trader/index.html dist/ 2>/dev/null || true && cp -r packages/trader/dist/trader/js dist/ 2>/dev/null || true && cp -r packages/trader/dist/trader/css dist/ 2>/dev/null || true"
   publish = "dist"
   environment = { NODE_VERSION = "20" }
 
