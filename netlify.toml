@@ -1,8 +1,7 @@
 [build]
-  # Build required workspaces then Trader; disable husky during CI
-  command = "HUSKY=0 NODE_OPTIONS='--max-old-space-size=4096' npm ci --strict-peer-deps && npm --workspace=@deriv/shared run build && npm --workspace=@deriv/components run build && npm --workspace=@deriv/trader run build"
-  # Serve the Trader dist output so /trader assets and headers apply
-  publish = "packages/trader/dist"
+  # Build the full app (includes Trader) and publish core/dist for routing
+  command = "HUSKY=0 NODE_OPTIONS='--max-old-space-size=4096' npm ci --strict-peer-deps && npm run build:all"
+  publish = "packages/core/dist"
   environment = { NODE_VERSION = "20", HUSKY = "0" }
 
 [[redirects]]
