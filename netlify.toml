@@ -1,6 +1,8 @@
 [build]
-  command = "npm run bootstrap && NODE_OPTIONS='--max-old-space-size=4096' npm run build:all"
-  publish = "packages/core/dist"
+  # Build only Trader for this deploy
+  command = "cd packages/trader && npm ci && NODE_OPTIONS='--max-old-space-size=4096' npm run build"
+  # Serve the Trader dist output so /trader assets and headers apply
+  publish = "packages/trader/dist"
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
@@ -20,6 +22,8 @@
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=3600"
+    X-Frame-Options = "ALLOWALL"
+    Content-Security-Policy = "frame-ancestors *"
 
 [[headers]]
   for = "/js/*"
