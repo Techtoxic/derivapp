@@ -1,9 +1,9 @@
 [build]
-  # Build only Trader for this deploy
-  command = "cd packages/trader && npm ci && NODE_OPTIONS='--max-old-space-size=4096' npm run build"
+  # Build only Trader for this deploy; disable husky during CI
+  command = "HUSKY=0 NODE_OPTIONS='--max-old-space-size=4096' npm ci --strict-peer-deps && npm --workspace=@deriv/trader run build"
   # Serve the Trader dist output so /trader assets and headers apply
   publish = "packages/trader/dist"
-  environment = { NODE_VERSION = "20" }
+  environment = { NODE_VERSION = "20", HUSKY = "0" }
 
 [[redirects]]
   from = "/"
