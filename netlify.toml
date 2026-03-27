@@ -4,6 +4,11 @@
   environment = { NODE_VERSION = "20" }
 
 [[redirects]]
+  from = "/"
+  to = "/dtrader"
+  status = 302
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
