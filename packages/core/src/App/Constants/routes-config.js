@@ -6,7 +6,6 @@ import { makeLazyLoader, moduleLoader, routes } from '@deriv/shared';
 import { localize } from '@deriv/translations';
 
 import Redirect from 'App/Containers/Redirect';
-import RootComponent from 'App/Containers/RootComponent';
 import Endpoint from 'Modules/Endpoint';
 
 import CallbackPage from '../../Modules/Callback/CallbackPage.tsx';
@@ -311,9 +310,10 @@ const getModules = () => {
         },
         {
             path: routes.traders_hub,
-            component: RootComponent,
+            component: RouterRedirect,
+            to: routes.trade,
             is_authenticated: false,
-            getTitle: () => localize("Trader's Hub"),
+            getTitle: () => localize('DTrader'),
         },
         {
             path: routes.callback_page,
