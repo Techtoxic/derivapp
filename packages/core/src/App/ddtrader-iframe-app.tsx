@@ -21,6 +21,7 @@ const DDTraderIframeApp = () => (
     <main style={wrapperStyle}>
         <iframe
             allow="fullscreen; clipboard-read; clipboard-write"
+            sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
             loading="eager"
             src="https://ddtrader.netlify.app/"
             style={iframeStyle}
