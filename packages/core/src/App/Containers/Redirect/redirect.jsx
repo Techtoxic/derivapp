@@ -382,7 +382,7 @@ const Redirect = observer(() => {
                     { pattern: /dbot/i, route: routes.bot },
                 ];
 
-                const default_route = routes.traders_hub;
+                const default_route = routes.trade;
 
                 const matched_route = route_mappings.find(({ pattern }) =>
                     pattern.test(url_query_string || history.location.search)
