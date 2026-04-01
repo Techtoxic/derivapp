@@ -6,6 +6,7 @@ import { makeLazyLoader, moduleLoader, routes } from '@deriv/shared';
 import { localize } from '@deriv/translations';
 
 import Redirect from 'App/Containers/Redirect';
+import RootComponent from 'App/Containers/RootComponent';
 import Endpoint from 'Modules/Endpoint';
 
 import CallbackPage from '../../Modules/Callback/CallbackPage.tsx';
@@ -55,10 +56,6 @@ const Bot = React.lazy(() =>
 
 const RedirectToNewTradersHub = () => {
     return <Redirect to={routes.traders_hub} />;
-};
-
-const RedirectToDTrader = () => {
-    return <Redirect to={routes.trade} />;
 };
 
 const getModules = () => {
@@ -314,9 +311,10 @@ const getModules = () => {
         },
         {
             path: routes.traders_hub,
-            component: RedirectToDTrader,
+            exact: true,
+            component: RootComponent,
             is_authenticated: false,
-            getTitle: () => localize('Trader'),
+            getTitle: () => localize("Trader's Hub"),
         },
         {
             path: routes.callback_page,
@@ -337,7 +335,7 @@ const lazyLoadComplaintsPolicy = makeLazyLoader(
 // Order matters
 // TODO: search tag: test-route-parent-info -> Enable test for getting route parent info when there are nested routes
 const initRoutesConfig = () => [
-    { path: routes.index, component: RouterRedirect, getTitle: () => '', to: routes.trade },
+    { path: routes.index, exact: true, component: RouterRedirect, getTitle: () => '', to: routes.trade },
     { path: routes.endpoint, component: Endpoint, getTitle: () => 'Endpoint' }, // doesn't need localization as it's for internal use
     { path: routes.os_redirect, component: OSRedirect, getTitle: () => localize('Redirect') },
     { path: routes.redirect, component: Redirect, getTitle: () => localize('Redirect') },
