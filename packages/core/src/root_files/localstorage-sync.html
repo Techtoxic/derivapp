@@ -37,8 +37,14 @@
                         case 'client.accounts': {
                             if (!message.data.value) {
                                 localStorage.removeItem(normalized_key);
+                                if (normalized_key === 'active_loginid') {
+                                    sessionStorage.removeItem(normalized_key);
+                                }
                             } else if (localStorage.getItem(normalized_key) !== message.data.value) {
                                 localStorage.setItem(normalized_key, message.data.value);
+                                if (normalized_key === 'active_loginid') {
+                                    sessionStorage.setItem(normalized_key, message.data.value);
+                                }
                             }
 
                             window.parent?.postMessage(
