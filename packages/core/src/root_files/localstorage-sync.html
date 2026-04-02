@@ -17,6 +17,8 @@
                 var allowed_origins = [
                     `https://smarttrader.${domain_url}`,
                     `https://staging-smarttrader.${domain_url}`,
+                    `https://app.${domain_url}`,
+                    `https://staging-app.${domain_url}`,
                     `https://dbot.${domain_url}`,
                     `https://staging-dbot.${domain_url}`,
                     `https://bot.${domain_url}`,
@@ -37,6 +39,17 @@
                             } else if (localStorage.getItem(normalized_key) !== message.data.value) {
                                 localStorage.setItem(normalized_key, message.data.value);
                             }
+
+                            window.parent?.postMessage(
+                                {
+                                    key: 'localstorage-sync-ready',
+                                    value: JSON.stringify({
+                                        clientAccounts: localStorage.getItem('client.accounts') || '',
+                                        activeLoginid: localStorage.getItem('active_loginid') || '',
+                                    }),
+                                },
+                                message.origin
+                            );
                             break;
                         }
                     }
