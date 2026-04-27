@@ -49,7 +49,10 @@
                     (is_netlify_host && is_netlify_origin);
 
                 if (is_allowed_origin) {
-                    const normalized_key = message.data.key === 'clientAccounts' ? 'client.accounts' : message.data.key;
+                    const key_alias_map = {
+                        clientAccounts: 'client.accounts',
+                    };
+                    const normalized_key = key_alias_map[message.data.key] || message.data.key;
                     switch (normalized_key) {
                         case 'active_loginid':
                         case 'client.accounts': {
@@ -71,6 +74,39 @@
                                     value: JSON.stringify({
                                         clientAccounts: localStorage.getItem('client.accounts') || '',
                                         activeLoginid: localStorage.getItem('active_loginid') || '',
+                                        activeWalletLoginid: localStorage.getItem('active_wallet_loginid') || '',
+                                        authToken: localStorage.getItem('authToken') || '',
+                                        accountsList: localStorage.getItem('accountsList') || '',
+                                    }),
+                                },
+                                message.origin
+                            );
+                            break;
+                        }
+                        case 'active_wallet_loginid':
+                        case 'authToken':
+                        case 'accountsList': {
+                            if (!message.data.value) {
+                                localStorage.removeItem(normalized_key);
+                                if (normalized_key === 'active_wallet_loginid') {
+                                    sessionStorage.removeItem(normalized_key);
+                                }
+                            } else if (localStorage.getItem(normalized_key) !== message.data.value) {
+                                localStorage.setItem(normalized_key, message.data.value);
+                                if (normalized_key === 'active_wallet_loginid') {
+                                    sessionStorage.setItem(normalized_key, message.data.value);
+                                }
+                            }
+
+                            window.parent?.postMessage(
+                                {
+                                    key: 'localstorage-sync-ready',
+                                    value: JSON.stringify({
+                                        clientAccounts: localStorage.getItem('client.accounts') || '',
+                                        activeLoginid: localStorage.getItem('active_loginid') || '',
+                                        activeWalletLoginid: localStorage.getItem('active_wallet_loginid') || '',
+                                        authToken: localStorage.getItem('authToken') || '',
+                                        accountsList: localStorage.getItem('accountsList') || '',
                                     }),
                                 },
                                 message.origin
