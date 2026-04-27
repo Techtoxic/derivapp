@@ -30,7 +30,25 @@
                     `https://dev-hub.${domain_url}`,
                     `https://hub.${domain_url}`,
                 ];
-                if (allowed_origins.includes(message.origin)) {
+                let referrer_origin = '';
+                if (document.referrer) {
+                    try {
+                        referrer_origin = new URL(document.referrer).origin;
+                    } catch (e) {
+                        referrer_origin = '';
+                    }
+                }
+
+                const is_localhost_origin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(message.origin);
+                const is_netlify_host = window.location.hostname.endsWith('.netlify.app');
+                const is_netlify_origin = /^https:\/\/[a-z0-9-]+\.netlify\.app$/i.test(message.origin);
+                const is_allowed_origin =
+                    allowed_origins.includes(message.origin) ||
+                    message.origin === referrer_origin ||
+                    is_localhost_origin ||
+                    (is_netlify_host && is_netlify_origin);
+
+                if (is_allowed_origin) {
                     const normalized_key = message.data.key === 'clientAccounts' ? 'client.accounts' : message.data.key;
                     switch (normalized_key) {
                         case 'active_loginid':
